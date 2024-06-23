@@ -1,24 +1,25 @@
 package mysocket
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 )
+
+const responseBuf = 1024
 
 func ClientCreate(host string, port int) (net.Conn, error) {
 	conn, _ := net.Dial("tcp", host+":"+strconv.Itoa(port))
 	return conn, nil
 }
 
-func ClientSend(conn net.Conn, data string) string {
+func ClientSend(conn net.Conn, data string) (string, error) {
 	conn.Write([]byte(data))
-	buf := make([]byte, 1024)
+	buf := make([]byte, responseBuf)
 	mLen, err := conn.Read(buf)
 	if err != nil {
-		fmt.Println("Error reading:", err.Error())
+		return "", err
 	}
-	return string(buf[:mLen])
+	return string(buf[:mLen]), nil
 }
 
 func ClientClose(conn net.Conn) {

@@ -81,7 +81,7 @@ func testWebsocketServer() {
 		fmt.Printf("Client #%d [%s]\n", i+1, time.Since(timeBegin).Round(time.Millisecond))
 		fmt.Printf("-- Request: %s\n", request)
 		client, _ := mysocket.ClientCreate(host, port)
-		response := mysocket.ClientSend(client, request)
+		response, _ := mysocket.ClientSend(client, request)
 		fmt.Printf("-- Response:%s\n", response)
 		time.Sleep(time.Millisecond * time.Duration(500/(i+1)))
 	}
