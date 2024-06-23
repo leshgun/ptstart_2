@@ -10,20 +10,20 @@ import (
 )
 
 type Request struct {
-	X1 float64
-	X2 float64
-	X3 float64
-	Y1 float64
-	Y2 float64
-	Y3 float64
+	X1 string
+	X2 string
+	X3 string
+	Y1 string
+	Y2 string
+	Y3 string
 	E  int
 }
 
 type Response struct {
 	Code  int
 	Error string
-	X     float64
-	Y     float64
+	X     string
+	Y     string
 	E     string
 }
 
@@ -112,22 +112,31 @@ func serverError(code int, err string) Response {
 }
 
 func calcResult(req Request) Response {
-	if req.X2 == 0 || req.Y2 == 0 {
+	prec := uint(req.E * 4)
+	bx1, _ := big.NewFloat(0.0).SetPrec(prec).SetString(req.X1)
+	bx2, _ := big.NewFloat(0.0).SetPrec(prec).SetString(req.X2)
+	bx3, _ := big.NewFloat(0.0).SetPrec(prec).SetString(req.X3)
+	by1, _ := big.NewFloat(0.0).SetPrec(prec).SetString(req.Y1)
+	by2, _ := big.NewFloat(0.0).SetPrec(prec).SetString(req.Y2)
+	by3, _ := big.NewFloat(0.0).SetPrec(prec).SetString(req.Y3)
+	zero := big.NewFloat(0.0)
+	if bx2.Cmp(zero) == 0 || by2.Cmp(zero) == 0 {
 		return Response{Code: serverCodeErr, Error: "Integer devide by zero"}
 	}
-	bx := big.NewFloat(req.X1).SetPrec(uint(req.E))
-	bx.Quo(bx, big.NewFloat(req.X2))
-	bx.Mul(bx, big.NewFloat(req.X3))
-	by := big.NewFloat(req.Y1).SetPrec(uint(req.E))
-	by.Quo(by, big.NewFloat(req.Y2))
-	by.Mul(by, big.NewFloat(req.Y3))
+	bx1.Quo(bx1, bx2)
+	bx1.Mul(bx1, bx3)
+	by1.Quo(by1, by2)
+	by1.Mul(by1, by3)
 	var e string
-	if e = "F"; bx.Cmp(by) == 0 {
+	if e = "F"; bx1.Cmp(by1) == 0 {
 		e = "T"
 	}
-	x, _ := bx.Float64()
-	y, _ := by.Float64()
-	return Response{Code: serverCodeSuc, X: x, Y: y, E: e}
+	return Response{
+		Code: serverCodeSuc,
+		X:    bx1.Text('f', req.E),
+		Y:    by1.Text('f', req.E),
+		E:    e,
+	}
 }
 
 func responseToBytes(res Response) ([]byte, error) {

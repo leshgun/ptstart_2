@@ -69,10 +69,15 @@ func testWebsocketServer() {
 
 	timeBegin := time.Now()
 	for i := 0; i < clientNum; i++ {
-		request := fmt.Sprintf(
-			`{"X1": 0.%d, "X2": 0.%d, "X3": 0.%d, "Y1": 0.%d, "Y2": 0.%d, "Y3": 0.%d, "E": %d}`,
-			i, i*2, i*3, i, i*2, i*i*3, 10 * 4,
-		)
+		request := "{"
+		request += fmt.Sprintf(`"X1": "0.%s",`, strconv.Itoa(i))
+		request += fmt.Sprintf(`"X2": "0.%s",`, strconv.Itoa(i*2))
+		request += fmt.Sprintf(`"X3": "0.%s",`, strconv.Itoa(i*3))
+		request += fmt.Sprintf(`"Y1": "0.%s",`, strconv.Itoa(i))
+		request += fmt.Sprintf(`"Y2": "0.%s",`, strconv.Itoa(i*2))
+		request += fmt.Sprintf(`"Y3": "0.%s",`, strconv.Itoa(i*i*3))
+		request += fmt.Sprintf(`"E": %d`, i+2)
+		request += "}"
 		fmt.Printf("Client #%d [%s]\n", i+1, time.Since(timeBegin).Round(time.Millisecond))
 		fmt.Printf("-- Request: %s\n", request)
 		client, _ := mysocket.ClientCreate(host, port)
