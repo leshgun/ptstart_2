@@ -5,7 +5,7 @@
 - `prometheus.yml` - сбор метрик из Blackbox-exporter, описывающие адрес "https://ptsecurity.com"
 
 ## Запуск
-Данный пример сбора метрик из Blackbox-exportet можно запустить в докер контейнере через команду `docker-compose`:
+Данный пример сбора метрик из Blackbox-exportet можно запустить в докер контейнере при помощи команды `docker-compose`:
 ```bash
 docker-compose up --build
 ```
