@@ -1,0 +1,18 @@
+services:
+  blackbox:
+    image: prom/blackbox-exporter
+    command: --config.file=/etc/blackbox/blackbox.yml
+    ports: 
+      - 9115:9115
+    volumes: 
+      - ./blackbox.yml:/etc/blackbox/blackbox.yml
+  
+  prometheus:
+    image: prom/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+    depends_on: 
+      - blackbox
+    ports: 
+      - 9090:9090
+    volumes: 
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
