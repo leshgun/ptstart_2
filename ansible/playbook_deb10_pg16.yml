@@ -1,0 +1,35 @@
+- name: Debian10
+  hosts: host
+  become: true
+  tasks:
+    - name: Install packages
+      apt:
+        name:
+          - python3-apt
+          - gpg
+      become: true
+
+    - name: Install Postgresql
+      block:
+      - name: Add key for Postgres repo
+        apt_key: 
+          url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          state: present
+        become: true
+      - name: Add Postgres repo to sources list
+        apt_repository:
+          repo: >-
+            deb http://apt.postgresql.org/pub/repos/apt/ 
+            {{ ansible_distribution_release }}-pgdg main
+          state: present
+        become: true
+      - name: Install packages
+        ansible.builtin.apt:
+          name:
+            - postgresql-16
+      - name: Check PostgreSQL service
+        service:
+          name: postgresql
+          state: started
+          enabled: true
+

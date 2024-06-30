@@ -1,0 +1,3 @@
+ANSIBLE_HOST: localhost
+ANSIBLE_USER: ansible
+ANSIBLE_PASS: ansible
