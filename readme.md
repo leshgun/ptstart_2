@@ -1,4 +1,4 @@
-## Simle GO Packeges
+## Simle GO Packages
 
 ### Floatmath
 
